@@ -2,20 +2,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import stoviaLogo from "@/assets/stovia-logo.png";
-import guideCoffee from "@/assets/guide-coffee.png";
-import guideOvens from "@/assets/guide-ovens.png";
-import guideRefrigeration from "@/assets/guide-refrigeration.png";
-import guideDishwashing from "@/assets/guide-dishwashing.png";
-import guideLaundry from "@/assets/guide-laundry.png";
-import guideBakery from "@/assets/guide-bakery.png";
 
-const guides = [
-  { id: "coffee", image: guideCoffee, title: "Coffee Makers" },
-  { id: "ovens", image: guideOvens, title: "Commercial Ovens" },
-  { id: "refrigeration", image: guideRefrigeration, title: "Refrigeration" },
-  { id: "dishwashing", image: guideDishwashing, title: "Dishwashing" },
-  { id: "laundry", image: guideLaundry, title: "Laundry Solutions" },
-  { id: "bakery", image: guideBakery, title: "Bakery Equipment" },
+const animatedWords = [
+  "Coffee Makers",
+  "Commercial Ovens", 
+  "Refrigeration",
+  "Dishwashing Equipment",
+  "Laundry Solutions",
+  "Bakery Equipment"
 ];
 
 interface HeroSectionProps {
@@ -23,12 +17,12 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ onScrollToForm }: HeroSectionProps) => {
-  const [currentGuide, setCurrentGuide] = useState(0);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentGuide((prev) => (prev + 1) % guides.length);
-    }, 3000);
+      setCurrentWordIndex((prev) => (prev + 1) % animatedWords.length);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -52,35 +46,29 @@ export const HeroSection = ({ onScrollToForm }: HeroSectionProps) => {
       </h1>
 
       {/* Subheading */}
-      <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl fade-in-up">
+      <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-3xl fade-in-up">
         Covering commercial kitchens, bakery equipment, refrigeration, ovens, 
         coffee makers, laundry solutions, and more.
       </p>
 
-      {/* Animated Guide Covers */}
-      <div className="relative h-64 md:h-80 mb-12 flex items-center justify-center">
-        {guides.map((guide, index) => (
-          <div
-            key={guide.id}
-            className={`absolute transition-all duration-1000 ${
-              index === currentGuide
-                ? "opacity-100 scale-110 guide-underglow"
-                : "opacity-0 scale-95"
-            }`}
-          >
-            <img
-              src={guide.image}
-              alt={`${guide.title} Guide`}
-              className="h-48 md:h-64 w-auto rounded-lg shadow-2xl"
-            />
-            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-primary/20 backdrop-blur-sm px-4 py-2 rounded-full">
-              <span className="text-primary font-medium text-sm">
-                {guide.title}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Animated Text Line */}
+      <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl fade-in-up">
+        Enjoy from our exciting lineup of{" "}
+        <span className="relative inline-block h-8 overflow-hidden">
+          {animatedWords.map((word, index) => (
+            <span
+              key={word}
+              className={`absolute left-0 transition-all duration-500 text-primary glow font-semibold ${
+                index === currentWordIndex
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-full"
+              }`}
+            >
+              {word}
+            </span>
+          ))}
+        </span>
+      </p>
 
       {/* CTA Button */}
       <Button 
