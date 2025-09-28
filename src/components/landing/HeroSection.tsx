@@ -31,11 +31,13 @@ export const HeroSection = ({ onScrollToForm }: HeroSectionProps) => {
     <section className="hero-gradient min-h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
       {/* Logo */}
       <div className="mb-12 fade-in-up">
-        <img 
-          src={stoviaLogo} 
-          alt="Stovia Commercial Kitchen Equipment" 
-          className="h-16 md:h-20 mx-auto"
-        />
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+          <img 
+            src={stoviaLogo} 
+            alt="Stovia Commercial Kitchen Equipment" 
+            className="h-16 md:h-20 mx-auto"
+          />
+        </div>
       </div>
 
       {/* Headline */}
@@ -54,14 +56,14 @@ export const HeroSection = ({ onScrollToForm }: HeroSectionProps) => {
       {/* Animated Text Line */}
       <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl fade-in-up">
         Enjoy from our exciting lineup of{" "}
-        <span className="relative inline-block min-w-[200px] h-8 overflow-hidden">
+        <span className="relative inline-block min-w-[200px] h-8">
           {animatedWords.map((word, index) => (
             <span
               key={word}
-              className={`absolute left-0 top-0 whitespace-nowrap transition-all duration-500 text-primary glow font-semibold ${
+              className={`absolute left-0 top-0 whitespace-nowrap transition-all duration-500 font-semibold ${
                 index === currentWordIndex
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-full"
+                  ? "opacity-100 translate-y-0 text-primary glow"
+                  : "opacity-0 translate-y-2"
               }`}
             >
               {word}
