@@ -56,15 +56,16 @@ export const HeroSection = ({ onScrollToForm }: HeroSectionProps) => {
       {/* Animated Text Line */}
       <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl fade-in-up">
         Enjoy from our exciting lineup of{" "}
-        <span className="relative inline-block min-w-[200px] h-8">
+        <span className="relative inline-block align-baseline overflow-hidden h-[1.2em] min-w-[22ch]">
           {animatedWords.map((word, index) => (
             <span
               key={word}
-              className={`absolute left-0 top-0 whitespace-nowrap transition-all duration-500 font-semibold ${
+              className={`absolute inset-0 whitespace-nowrap transition-transform duration-500 font-semibold text-primary ${
                 index === currentWordIndex
-                  ? "opacity-100 translate-y-0 text-primary glow"
-                  : "opacity-0 translate-y-2"
+                  ? "opacity-100 translate-y-0 glow"
+                  : "opacity-0 translate-y-full"
               }`}
+              aria-hidden={index !== currentWordIndex}
             >
               {word}
             </span>
