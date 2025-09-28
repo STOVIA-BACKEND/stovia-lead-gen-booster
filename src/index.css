@@ -2,41 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Stovia Landing Page Design System - Dark theme with cyan accents */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dark theme foundation */
+    --background: 220 20% 8%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Card system */
+    --card: 220 20% 12%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Popover system */
+    --popover: 220 20% 12%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Brand colors - Stovia cyan theme */
+    --primary: 195 100% 72%; /* Cyan #76DCFF */
+    --primary-foreground: 220 20% 8%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary system */
+    --secondary: 220 20% 16%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted system */
+    --muted: 220 20% 16%;
+    --muted-foreground: 210 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent system */
+    --accent: 195 100% 72%;
+    --accent-foreground: 220 20% 8%;
 
-    --destructive: 0 84.2% 60.2%;
+    /* Status colors */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 220 20% 8%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Form system */
+    --border: 220 20% 20%;
+    --input: 220 20% 16%;
+    --ring: 195 100% 72%;
 
-    --radius: 0.5rem;
+    /* Custom brand variables */
+    --hero-gradient-start: 220 20% 4%;
+    --hero-gradient-end: 197 35% 19%; /* Dark blue #1C3A47 equivalent */
+    --underglow: 195 100% 72%;
+    --scarcity-red: 0 84% 60%;
+    --urgency-orange: 25 95% 53%;
+
+    --radius: 0.75rem;
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +123,119 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Hero gradient background */
+  .hero-gradient {
+    background: linear-gradient(135deg, 
+      hsl(var(--hero-gradient-start)), 
+      hsl(var(--hero-gradient-end))
+    );
+  }
+
+  /* Underglow effect for animated guides */
+  .guide-underglow {
+    box-shadow: 0 0 30px hsl(var(--underglow) / 0.4),
+                0 0 60px hsl(var(--underglow) / 0.2);
+  }
+
+  /* Button variants */
+  .btn-hero {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 
+           px-8 py-4 rounded-lg font-semibold text-lg
+           transition-all duration-300 hover:scale-105 hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-primary border border-primary 
+           hover:bg-primary hover:text-primary-foreground
+           px-6 py-3 rounded-lg font-medium
+           transition-all duration-300;
+  }
+
+  /* Form card styling */
+  .form-card {
+    @apply bg-card border border-border rounded-xl p-6 shadow-2xl
+           backdrop-blur-sm;
+  }
+
+  /* Status badges */
+  .badge-scarcity {
+    @apply bg-destructive/10 text-destructive border border-destructive/20 
+           px-3 py-2 rounded-lg text-sm font-medium;
+  }
+
+  .badge-urgency {
+    @apply bg-warning/10 text-warning border border-warning/20 
+           px-3 py-2 rounded-lg text-sm font-medium;
+  }
+
+  .badge-free {
+    @apply bg-primary/10 text-primary border border-primary/20 
+           px-3 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide;
+  }
+
+  /* Guide selection cards */
+  .guide-card {
+    @apply border border-border rounded-lg p-4 cursor-pointer
+           transition-all duration-300 hover:border-primary
+           hover:bg-primary/5;
+  }
+
+  .guide-card.selected {
+    @apply border-primary bg-primary/10;
+  }
+
+  /* Animations */
+  .fade-in-up {
+    @apply animate-[fadeInUp_0.6s_ease-out_forwards];
+  }
+
+  .slide-in-right {
+    @apply animate-[slideInRight_0.8s_ease-out_forwards];
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .glow {
+    filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.5));
+  }
+}
+
+/* Keyframes for custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--underglow) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--underglow) / 0.6);
   }
 }
