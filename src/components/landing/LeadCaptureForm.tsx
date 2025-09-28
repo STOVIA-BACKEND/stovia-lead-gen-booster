@@ -32,12 +32,12 @@ const saudiCities = [
 ];
 
 const countryCodeOptions = [
-  { code: "+966", country: "Saudi Arabia" },
-  { code: "+971", country: "UAE" },
-  { code: "+973", country: "Bahrain" },
-  { code: "+974", country: "Qatar" },
-  { code: "+965", country: "Kuwait" },
-  { code: "+968", country: "Oman" },
+  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
+  { code: "+971", country: "UAE", flag: "🇦🇪" },
+  { code: "+973", country: "Bahrain", flag: "🇧🇭" },
+  { code: "+974", country: "Qatar", flag: "🇶🇦" },
+  { code: "+965", country: "Kuwait", flag: "🇰🇼" },
+  { code: "+968", country: "Oman", flag: "🇴🇲" },
 ];
 
 const jobTitles = [
@@ -65,13 +65,8 @@ type FormData = z.infer<typeof formSchema>;
 
 export const LeadCaptureForm = () => {
   const [selectedGuide, setSelectedGuide] = useState<string>("");
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  
+  const [selectedCountry, setSelectedCountry] = useState(countryCodeOptions[0]);
+
   const { toast } = useToast();
   
   const {
@@ -82,33 +77,10 @@ export const LeadCaptureForm = () => {
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      countryCode: countryCodeOptions[0].code,
+    },
   });
-
-  // Countdown timer to September 30, 2025
-  React.useEffect(() => {
-    const targetDate = new Date('2025-09-30T23:59:59').getTime();
-    
-    const updateCountdown = () => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
-      
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-        
-        setTimeLeft({ days, hours, minutes, seconds });
-      }
-    };
-    
-    updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    
-    return () => clearInterval(timer);
-  }, []);
-
-  const selectedGuideData = guides.find(g => g.id === selectedGuide);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -139,246 +111,192 @@ export const LeadCaptureForm = () => {
 
   return (
     <section id="lead-form" className="py-20 px-4 bg-background">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left Column - Info */}
-          <div className="space-y-8 fade-in-up">
-            <Badge className="badge-free inline-flex items-center gap-2">
-              <Download className="h-4 w-4" />
-              FREE GUIDE
-            </Badge>
-            
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Download Your Free Expert Guide
-              </h2>
-              <p className="text-lg text-muted-foreground mb-6">
-                {selectedGuideData 
-                  ? selectedGuideData.subtitle 
-                  : "Select a guide below to get started with professional equipment insights."
-                }
-              </p>
-            </div>
-
-            {/* Scarcity & Urgency Boxes */}
-            <div className="space-y-4">
-              <div className="badge-scarcity">
-                <strong>Limited Access:</strong> Only 30 downloads per guide this month
-              </div>
-              
-              <div className="badge-urgency">
-                <strong>Guides Refresh:</strong> Content will be updated on September 30, 2025
-              </div>
-            </div>
-
-            {/* Countdown Timer */}
-            <Card className="bg-card/50 border-primary/20">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-primary">
-                  <Clock className="h-5 w-5" />
-                  Time Until Content Refresh
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-4 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-primary">{timeLeft.days}</div>
-                    <div className="text-sm text-muted-foreground">Days</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">{timeLeft.hours}</div>
-                    <div className="text-sm text-muted-foreground">Hours</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">{timeLeft.minutes}</div>
-                    <div className="text-sm text-muted-foreground">Minutes</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">{timeLeft.seconds}</div>
-                    <div className="text-sm text-muted-foreground">Seconds</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column - Form */}
-          <Card className="form-card slide-in-right">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">Get Your Free Guide</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Guide Selection */}
-                <div>
-                  <Label className="text-base font-medium">Choose Your Guide *</Label>
-                  <div className="grid grid-cols-2 gap-3 mt-3">
-                    {guides.map((guide) => (
-                      <div
-                        key={guide.id}
-                        className={`guide-card ${selectedGuide === guide.id ? 'selected' : ''}`}
-                        onClick={() => {
-                          setSelectedGuide(guide.id);
-                          setValue('selectedGuide', guide.id);
-                        }}
-                      >
-                        <img 
-                          src={guide.image} 
-                          alt={guide.title}
-                          className="w-full h-24 object-cover rounded mb-2"
-                        />
-                        <p className="text-sm font-medium text-center">{guide.title}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.selectedGuide && (
-                    <p className="text-destructive text-sm mt-1">{errors.selectedGuide.message}</p>
-                  )}
-                </div>
-
-                {/* Name & Email */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">First Name *</Label>
-                    <Input 
-                      id="firstName"
-                      {...register("firstName")}
-                      className="mt-1"
-                    />
-                    {errors.firstName && (
-                      <p className="text-destructive text-sm mt-1">{errors.firstName.message}</p>
-                    )}
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="email">Email Address *</Label>
-                    <Input 
-                      id="email"
-                      type="email"
-                      {...register("email")}
-                      className="mt-1"
-                    />
-                    {errors.email && (
-                      <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <Label>Phone Number *</Label>
-                  <div className="flex gap-2 mt-1">
-                    <Select onValueChange={(value) => setValue('countryCode', value)}>
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="+966" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countryCodeOptions.map((option) => (
-                          <SelectItem key={option.code} value={option.code}>
-                            {option.code}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <div className="flex-1">
-                      <Input 
-                        {...register("phoneNumber")}
-                        placeholder="Phone number"
+      <div className="max-w-3xl mx-auto"> {/* Centered and narrower */}
+        <Card className="form-card slide-in-right">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Get Your Free Guide</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {/* Guide Selection */}
+              <div>
+                <Label className="text-base font-medium">Choose Your Guide *</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+                  {guides.map((guide) => (
+                    <div
+                      key={guide.id}
+                      className={`guide-card ${selectedGuide === guide.id ? 'selected' : ''}`}
+                      onClick={() => {
+                        setSelectedGuide(guide.id);
+                        setValue('selectedGuide', guide.id);
+                      }}
+                    >
+                      <img 
+                        src={guide.image} 
+                        alt={guide.title}
+                        className="w-full h-24 object-cover rounded mb-2"
                       />
+                      <p className="text-sm font-medium text-center">{guide.title}</p>
                     </div>
-                  </div>
-                  {(errors.countryCode || errors.phoneNumber) && (
-                    <p className="text-destructive text-sm mt-1">
-                      {errors.countryCode?.message || errors.phoneNumber?.message}
-                    </p>
-                  )}
+                  ))}
                 </div>
+                {errors.selectedGuide && (
+                  <p className="text-destructive text-sm mt-1">{errors.selectedGuide.message}</p>
+                )}
+              </div>
 
-                {/* City & Job Title */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>City *</Label>
-                    <Select onValueChange={(value) => setValue('city', value)}>
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {saudiCities.map((city) => (
-                          <SelectItem key={city} value={city}>
-                            {city}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.city && (
-                      <p className="text-destructive text-sm mt-1">{errors.city.message}</p>
-                    )}
-                  </div>
-                  
-                  <div>
-                    <Label>Job Title *</Label>
-                    <Select onValueChange={(value) => setValue('jobTitle', value)}>
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select job title" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {jobTitles.map((title) => (
-                          <SelectItem key={title} value={title}>
-                            {title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.jobTitle && (
-                      <p className="text-destructive text-sm mt-1">{errors.jobTitle.message}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Business Name */}
+              {/* Name & Email */}
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="businessName">Business Name *</Label>
+                  <Label htmlFor="firstName">First Name *</Label>
                   <Input 
-                    id="businessName"
-                    {...register("businessName")}
+                    id="firstName"
+                    {...register("firstName")}
                     className="mt-1"
                   />
-                  {errors.businessName && (
-                    <p className="text-destructive text-sm mt-1">{errors.businessName.message}</p>
+                  {errors.firstName && (
+                    <p className="text-destructive text-sm mt-1">{errors.firstName.message}</p>
                   )}
                 </div>
-
-                {/* Timeline */}
+                
                 <div>
-                  <Label>Implementation Timeline *</Label>
-                  <Select onValueChange={(value) => setValue('timeline', value)}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="When are you looking to purchase?" />
+                  <Label htmlFor="email">Email Address *</Label>
+                  <Input 
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    className="mt-1"
+                  />
+                  {errors.email && (
+                    <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <Label>Phone Number *</Label>
+                <div className="flex gap-2 mt-1">
+                  <Select 
+                    defaultValue={selectedCountry.code}
+                    onValueChange={(value) => {
+                      setValue('countryCode', value);
+                      const country = countryCodeOptions.find(c => c.code === value);
+                      if (country) setSelectedCountry(country);
+                    }}
+                  >
+                    <SelectTrigger className="w-40">
+                      <div className="flex items-center gap-2">
+                        <span>{selectedCountry.flag}</span>
+                        <SelectValue />
+                      </div>
                     </SelectTrigger>
                     <SelectContent>
-                      {timelines.map((timeline) => (
-                        <SelectItem key={timeline} value={timeline}>
-                          {timeline}
+                      {countryCodeOptions.map((option) => (
+                        <SelectItem key={option.code} value={option.code}>
+                          {option.code}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.timeline && (
-                    <p className="text-destructive text-sm mt-1">{errors.timeline.message}</p>
+                  <div className="flex-1">
+                    <Input 
+                      {...register("phoneNumber")}
+                      placeholder="Phone number"
+                    />
+                  </div>
+                </div>
+                {(errors.countryCode || errors.phoneNumber) && (
+                  <p className="text-destructive text-sm mt-1">
+                    {errors.countryCode?.message || errors.phoneNumber?.message}
+                  </p>
+                )}
+              </div>
+
+              {/* City & Job Title */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>City *</Label>
+                  <Select onValueChange={(value) => setValue('city', value)}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select city" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {saudiCities.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.city && (
+                    <p className="text-destructive text-sm mt-1">{errors.city.message}</p>
                   )}
                 </div>
+                
+                <div>
+                  <Label>Job Title *</Label>
+                  <Select onValueChange={(value) => setValue('jobTitle', value)}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select job title" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {jobTitles.map((title) => (
+                        <SelectItem key={title} value={title}>
+                          {title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.jobTitle && (
+                    <p className="text-destructive text-sm mt-1">{errors.jobTitle.message}</p>
+                  )}
+                </div>
+              </div>
 
-                <Button 
-                  type="submit" 
-                  className="btn-hero w-full"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Submitting..." : "Get Free Guide Now"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
+              {/* Business Name */}
+              <div>
+                <Label htmlFor="businessName">Business Name *</Label>
+                <Input 
+                  id="businessName"
+                  {...register("businessName")}
+                  className="mt-1"
+                />
+                {errors.businessName && (
+                  <p className="text-destructive text-sm mt-1">{errors.businessName.message}</p>
+                )}
+              </div>
+
+              {/* Timeline */}
+              <div>
+                <Label>Implementation Timeline *</Label>
+                <Select onValueChange={(value) => setValue('timeline', value)}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="When are you looking to purchase?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timelines.map((timeline) => (
+                      <SelectItem key={timeline} value={timeline}>
+                        {timeline}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.timeline && (
+                  <p className="text-destructive text-sm mt-1">{errors.timeline.message}</p>
+                )}
+              </div>
+
+              <Button 
+                type="submit" 
+                className="btn-hero w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Get Free Guide Now"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );

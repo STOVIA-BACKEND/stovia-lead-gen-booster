@@ -17,74 +17,102 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ onScrollToForm }: HeroSectionProps) => {
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const extendedAnimatedWords = [...animatedWords, ...animatedWords, ...animatedWords];
+  const [currentWordIndex, setCurrentWordIndex] = useState(animatedWords.length);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentWordIndex((prev) => (prev + 1) % animatedWords.length);
+    const animationInterval = setInterval(() => {
+      setCurrentWordIndex(prevIndex => prevIndex + 1);
     }, 2000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(animationInterval);
   }, []);
+
+  useEffect(() => {
+    if (currentWordIndex >= animatedWords.length * 2) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentWordIndex(animatedWords.length);
+        setTimeout(() => {
+          setIsTransitioning(true);
+        }, 50);
+      }, 800);
+    }
+  }, [currentWordIndex]);
 
   return (
     <section className="hero-gradient min-h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
-      {/* Logo */}
-      <div className="mb-12 fade-in-up">
-        <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-lg">
+      <div className="pt-8 w-full"> {/* Added w-full */}
+        {/* Logo */}
+        <div className="mb-8 fade-in-up">
           <img 
             src={stoviaLogo} 
             alt="Stovia Commercial Kitchen Equipment" 
             className="h-16 md:h-20 mx-auto"
           />
         </div>
-      </div>
 
-      {/* Headline */}
-      <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 max-w-5xl leading-tight text-shadow fade-in-up">
-        Six Expert Guides. One{" "}
-        <span className="text-primary glow">Free Download</span>. 
-        <br />Choose Yours Today.
-      </h1>
+        {/* Headline */}
+        <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 max-w-5xl leading-tight text-shadow fade-in-up mx-auto"> {/* Added mx-auto */}
+          Six Expert Guides. One{" "}
+          <span className="text-primary glow">Free Download</span>. 
+          <br />Choose Yours Today.
+        </h1>
 
-      {/* Subheading */}
-      <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-3xl fade-in-up">
-        Covering commercial kitchens, bakery equipment, refrigeration, ovens, 
-        coffee makers, laundry solutions, and more.
-      </p>
+        {/* Subheading */}
+        <p className="text-lg md:text-xl text-muted-foreground mb-4 max-w-3xl fade-in-up mx-auto"> {/* Added mx-auto */}
+          Covering commercial kitchens, bakery equipment, refrigeration, ovens, 
+          coffee makers, laundry solutions, and more.
+        </p>
 
-      {/* Animated Text Line */}
-      <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl fade-in-up">
-        Enjoy from our exciting lineup of{" "}
-        <span className="relative inline-block align-baseline overflow-hidden h-[1.2em] min-w-[22ch]">
-          {animatedWords.map((word, index) => (
-            <span
-              key={word}
-              className={`absolute inset-0 whitespace-nowrap transition-transform duration-500 font-semibold text-primary ${
-                index === currentWordIndex
-                  ? "opacity-100 translate-y-0 glow"
-                  : "opacity-0 translate-y-full"
-              }`}
-              aria-hidden={index !== currentWordIndex}
+        {/* Animated Text Line */}
+        <div className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl fade-in-up flex items-center justify-center mx-auto"> {/* Added mx-auto */}
+          <span>Enjoy from our exciting lineup of&nbsp;</span>
+          <div
+            className="relative inline-block overflow-hidden text-center"
+            style={{
+              height: "1.5em",
+              width: "22ch",
+              verticalAlign: "middle",
+            }}
+          >
+            <div
+              style={{
+                transform: `translateY(-${currentWordIndex * 1.5}em)`,
+                transition: isTransitioning ? "transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : "none",
+              }}
             >
-              {word}
-            </span>
-          ))}
-        </span>
-      </p>
+              {extendedAnimatedWords.map((word, index) => (
+                <span
+                  key={`${word}-${index}`}
+                  className="block whitespace-nowrap font-semibold text-primary"
+                  style={{
+                    height: "1.5em",
+                    lineHeight: "1.5em",
+                    transition: "opacity 0.5s, filter 0.5s",
+                    opacity: 1 - Math.min(1, Math.abs(index - currentWordIndex) * 0.4),
+                    filter: `blur(${Math.min(4, Math.abs(index - currentWordIndex) * 2)}px)`,
+                  }}
+                  aria-hidden={index !== currentWordIndex}
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
 
-      {/* CTA Button */}
-      <Button 
-        onClick={onScrollToForm}
-        className="btn-hero mb-8 group"
-      >
-        Get My Free Guide
-        <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
-      </Button>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <ChevronDown className="h-6 w-6 text-primary" />
+        {/* CTA Button */}
+        <div className="pb-12"> {/* Added wrapper with pb-12 */}
+          <Button 
+            onClick={onScrollToForm}
+            className="btn-hero group" // Removed mb-8
+          >
+            Get My Free Guide
+            <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
+          </Button>
+        </div>
       </div>
     </section>
   );
